@@ -7,9 +7,6 @@
     "test": "jest",
     "staged": "lint-staged"
   },
-  "lint-staged": {
-    "*.js": "standard --fix"
-  },
   "keywords": [],
   "author": "",
   "license": "ISC",
