@@ -4,7 +4,8 @@
   "description": "Treinamento seguindo as aulas do Rodrigo Manguinho no youtube.",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --watch",
+    "test:staged": "jest",
     "staged": "lint-staged"
   },
   "standard": {
