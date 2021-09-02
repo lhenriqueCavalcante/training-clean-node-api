@@ -48,17 +48,24 @@ describe('Login Router', () => {
     expect(httpResponse.statusCode).toBe(500)
   })
 
+  test('should return 401 when invalid credentials are provided', () => {
+    const { sut } = makeSut()
+    const httpRequest = {
+    }
+    const httpResponse = sut.route(httpRequest)
+    expect(httpResponse.statusCode).toBe(500)
+  })
+
   test('should call AuthUseCase with correct params', () => {
-    const { sut, authUseCaseMock } = makeSut()
+    const { sut } = makeSut()
     const httpRequest = {
       body: {
-        email: 'any_email@mail.com',
-        password: 'any_password'
+        email: 'invalid_email@mail.com',
+        password: 'invalid_password'
       }
     }
 
-    sut.route(httpRequest)
-    expect(authUseCaseMock.email).toBe(httpRequest.body.email)
-    expect(authUseCaseMock.password).toBe(httpRequest.body.password)
+    const httpResponse = sut.route(httpRequest)
+    expect(httpResponse.statusCode).toBe(401)
   })
 })
