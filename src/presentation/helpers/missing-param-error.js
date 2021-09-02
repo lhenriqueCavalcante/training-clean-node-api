@@ -1,7 +1,7 @@
-class MissingParamError extends Error {
+class UnauthorizedError extends Error {
   constructor (paramName) {
-    super(`Missing param: ${paramName}`)
-    this.name = 'MissingParamError'
+    super('Unauthorized')
+    this.name = 'unauthorizedError'
   }
 }
-module.exports = MissingParamError
+module.exports = UnauthorizedError
