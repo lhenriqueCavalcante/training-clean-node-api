@@ -50,25 +50,46 @@ describe('Login Router', () => {
   })
 
   test('should return 401 when invalid credentials are provided', () => {
-    const { sut } = makeSut()
-    const httpRequest = {
-    }
-    const httpResponse = sut.route(httpRequest)
-    expect(httpResponse.statusCode).toBe(500)
-  })
-
-  test('should call AuthUseCase with correct params', () => {
-    const { sut } = makeSut()
+    const { sut, authUseCaseMock } = makeSut()
+    authUseCaseMock.accessToken = null
     const httpRequest = {
       body: {
         email: 'invalid_email@mail.com',
         password: 'invalid_password'
       }
     }
-
     const httpResponse = sut.route(httpRequest)
     expect(httpResponse.statusCode).toBe(401)
     expect(httpResponse.body).toEqual(new UnauthorizedError())
+  })
+
+  test('should return 200 when valid credentials are provided', () => {
+    const { sut, authUseCaseMock } = makeSut()
+    authUseCaseMock.accessToken = 'any_token'
+    const httpRequest = {
+      body: {
+        email: 'valid_email@mail.com',
+        password: 'valid_password'
+      }
+    }
+    const httpResponse = sut.route(httpRequest)
+    expect(httpResponse.statusCode).toBe(200)
+  })
+
+  test('should call AuthUseCase with correct params', () => {
+    const { sut, authUseCaseMock } = makeSut()
+    const authUseCaseSpy = jest.spyOn(authUseCaseMock, 'auth')
+
+    const email = 'invalid_email@mail.com'
+    const password = 'invalid_password@mail.com'
+    const httpRequest = {
+      body: {
+        email,
+        password
+      }
+    }
+    sut.route(httpRequest)
+    expect(authUseCaseSpy).toHaveBeenCalledWith(email, password)
   })
 
   test('should return 500 if no AuthUseCase is provided', () => {
