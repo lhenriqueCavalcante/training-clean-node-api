@@ -7,7 +7,7 @@
     "test": "jest --watch --silent --noStackTrace",
     "test:staged": "jest --passWithNoTests --silent --noStackTrace",
     "staged": "lint-staged",
-    "test:ci": ""
+    "test:ci": "jest --coverage"
   },
   "standard": {
     "env": [
