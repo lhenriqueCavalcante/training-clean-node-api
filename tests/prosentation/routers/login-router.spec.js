@@ -1,14 +1,18 @@
 const LoginRouter = require('../../../src/presentation/routers/login-router')
+
 const MissingParamError = require('../../../src/presentation/helpers/missing-param-error')
+const InvalidParamError = require('../../../src/presentation/helpers/invalid-param-error')
 const UnauthorizedError = require('../../../src/presentation/helpers/unauthorized-error')
 const ServerError = require('../../../src/presentation/helpers/server-error')
 
 const { AuthUseCaseMock, AuthUseCaseMockWithError } = require('../../mocks/auth-use-case-mock')
+const EmailValidatorMock = require('../../mocks/email-validator-mock')
 
 const makeSut = () => {
   const authUseCaseMock = new AuthUseCaseMock()
-  const sut = new LoginRouter(authUseCaseMock)
-  return { authUseCaseMock, sut }
+  const emailValidatorMock = new EmailValidatorMock()
+  const sut = new LoginRouter(authUseCaseMock, emailValidatorMock)
+  return { authUseCaseMock, emailValidatorMock, sut }
 }
 
 describe('Login Router', () => {
@@ -48,6 +52,20 @@ describe('Login Router', () => {
     const httpResponse = await sut.route(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body).toEqual(new MissingParamError('Password'))
+  })
+
+  test('should return 400 if an invalid email is provided', async () => {
+    const { sut, emailValidatorMock } = makeSut()
+    emailValidatorMock.isEmailValid = false
+    const httpRequest = {
+      body: {
+        email: 'invalid_email@mail.com',
+        password: 'any_password'
+      }
+    }
+    const httpResponse = await sut.route(httpRequest)
+    expect(httpResponse.statusCode).toBe(400)
+    expect(httpResponse.body).toEqual(new InvalidParamError('Email'))
   })
 
   test('should return 401 when invalid credentials are provided', async () => {
