@@ -10,4 +10,10 @@ class AuthUseCaseMock {
   }
 }
 
-module.exports = AuthUseCaseMock
+class AuthUseCaseMockWithError {
+  auth () {
+    throw new Error()
+  }
+}
+
+module.exports = { AuthUseCaseMock, AuthUseCaseMockWithError }
