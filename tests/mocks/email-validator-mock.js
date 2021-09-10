@@ -8,4 +8,10 @@ class EmailValidatorMock {
   }
 }
 
-module.exports = EmailValidatorMock
+class EmailValidatorMockWithError {
+  isValid () {
+    throw new Error()
+  }
+}
+
+module.exports = { EmailValidatorMock, EmailValidatorMockWithError }

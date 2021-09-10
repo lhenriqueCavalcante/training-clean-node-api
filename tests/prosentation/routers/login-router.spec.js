@@ -6,7 +6,7 @@ const UnauthorizedError = require('../../../src/presentation/helpers/unauthorize
 const ServerError = require('../../../src/presentation/helpers/server-error')
 
 const { AuthUseCaseMock, AuthUseCaseMockWithError } = require('../../mocks/auth-use-case-mock')
-const EmailValidatorMock = require('../../mocks/email-validator-mock')
+const { EmailValidatorMock, EmailValidatorMockWithError } = require('../../mocks/email-validator-mock')
 
 const makeSut = () => {
   const authUseCaseMock = new AuthUseCaseMock()
@@ -129,7 +129,25 @@ describe('Login Router', () => {
 
   test('should return 500 if AuthUseCase throws', async () => {
     const authUseCaseWithError = new AuthUseCaseMockWithError()
-    const sut = new LoginRouter(authUseCaseWithError)
+    const emailValidatorMock = new EmailValidatorMock()
+
+    const sut = new LoginRouter(authUseCaseWithError, emailValidatorMock)
+    const httpRequest = {
+      body: {
+        email: 'any_email@mail.com',
+        password: 'any_password'
+      }
+    }
+
+    const httpResponse = await sut.route(httpRequest)
+    expect(httpResponse.statusCode).toBe(500)
+  })
+
+  test('should return 500 if EmailValidator throws', async () => {
+    const emailValidatorMockWithError = new EmailValidatorMockWithError()
+    const authUseCase = new AuthUseCaseMock()
+
+    const sut = new LoginRouter(authUseCase, emailValidatorMockWithError)
     const httpRequest = {
       body: {
         email: 'any_email@mail.com',
