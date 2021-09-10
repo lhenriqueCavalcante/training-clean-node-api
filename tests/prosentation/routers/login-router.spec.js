@@ -163,8 +163,8 @@ describe('Login Router', () => {
     const { sut, authUseCaseMock } = makeSut()
     const authUseCaseSpy = jest.spyOn(authUseCaseMock, 'auth')
 
-    const email = 'invalid_email@mail.com'
-    const password = 'invalid_password@mail.com'
+    const email = 'valid_email@mail.com'
+    const password = 'valid_password@mail.com'
     const httpRequest = {
       body: {
         email,
@@ -173,5 +173,21 @@ describe('Login Router', () => {
     }
     await sut.route(httpRequest)
     expect(authUseCaseSpy).toHaveBeenCalledWith(email, password)
+  })
+
+  test('should call EmailValidator with correct param', async () => {
+    const { sut, emailValidatorMock } = makeSut()
+    const emailValidatorMockSpy = jest.spyOn(emailValidatorMock, 'isValid')
+
+    const email = 'valid_email@mail.com'
+    const password = 'valid_password@mail.com'
+    const httpRequest = {
+      body: {
+        email,
+        password
+      }
+    }
+    await sut.route(httpRequest)
+    expect(emailValidatorMockSpy).toHaveBeenCalledWith(email)
   })
 })
