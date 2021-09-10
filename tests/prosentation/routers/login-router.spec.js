@@ -102,8 +102,23 @@ describe('Login Router', () => {
     const sut = new LoginRouter()
     const httpRequest = {
       body: {
-        email: 'invalid_email@mail.com',
-        password: 'invalid_password'
+        email: 'valid_email@mail.com',
+        password: 'valid_password'
+      }
+    }
+
+    const httpResponse = await sut.route(httpRequest)
+    expect(httpResponse.statusCode).toBe(500)
+    expect(httpResponse.body).toEqual(new ServerError())
+  })
+
+  test('should return 500 if no EmailValidator is provided', async () => {
+    const { authUseCaseMock } = makeSut()
+    const sut = new LoginRouter(authUseCaseMock)
+    const httpRequest = {
+      body: {
+        email: 'valid_email@mail.com',
+        password: 'valid_password'
       }
     }
 
