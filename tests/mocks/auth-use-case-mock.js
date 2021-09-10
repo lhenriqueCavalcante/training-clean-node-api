@@ -3,7 +3,7 @@ class AuthUseCaseMock {
     this.accessToken = 'any_token'
   }
 
-  auth (email, password) {
+  async auth (email, password) {
     this.email = email
     this.password = password
     return this.accessToken
@@ -11,7 +11,7 @@ class AuthUseCaseMock {
 }
 
 class AuthUseCaseMockWithError {
-  auth () {
+  async auth () {
     throw new Error()
   }
 }
